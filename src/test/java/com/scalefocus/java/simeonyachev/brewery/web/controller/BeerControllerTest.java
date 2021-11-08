@@ -40,7 +40,6 @@ class BeerControllerTest {
     @BeforeEach
     public void setUp() {
         beer = BeerDTO.builder()
-                .id(UUID.randomUUID())
                 .name("Ариана")
                 .style("Тъмно")
                 .upc(123L)
@@ -49,6 +48,7 @@ class BeerControllerTest {
 
     @Test
     void getByIdSuccessfully() throws Exception {
+        beer.setId(UUID.randomUUID());
         when(beerService.getById(any(UUID.class))).thenReturn(beer);
 
         mockMvc.perform(get(BEER_URI + beer.getId().toString()).accept(APPLICATION_JSON))
@@ -61,7 +61,7 @@ class BeerControllerTest {
     @Test
     void saveBeerSuccessfully() throws Exception {
         String beerJson = objectMapper.writeValueAsString(beer);
-
+        beer.setId(UUID.randomUUID());
         when(beerService.saveBeer(any())).thenReturn(beer);
 
         mockMvc.perform(post(BEER_URI)
@@ -74,7 +74,7 @@ class BeerControllerTest {
     void updateBeerSuccessfully() throws Exception {
         String beerJson = objectMapper.writeValueAsString(beer);
 
-        mockMvc.perform(put(BEER_URI + beer.getId().toString())
+        mockMvc.perform(put(BEER_URI + UUID.randomUUID().toString())
                 .contentType(APPLICATION_JSON)
                 .content(beerJson))
                 .andExpect(status().isOk());
@@ -84,6 +84,7 @@ class BeerControllerTest {
 
     @Test
     void deleteByIdSuccessfully() throws Exception {
+        beer.setId(UUID.randomUUID());
         mockMvc.perform(delete(BEER_URI + beer.getId().toString()))
                 .andExpect(status().isNoContent());
 

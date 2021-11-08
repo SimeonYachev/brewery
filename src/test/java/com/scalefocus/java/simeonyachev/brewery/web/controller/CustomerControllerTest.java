@@ -40,13 +40,13 @@ class CustomerControllerTest {
     @BeforeEach
     public void setUp() {
         customer = CustomerDTO.builder()
-                .id(UUID.randomUUID())
                 .name("Калин4о")
                 .build();
     }
 
     @Test
     void getByIdSuccessfully() throws Exception {
+        customer.setId(UUID.randomUUID());
         when(customerService.getById(any(UUID.class))).thenReturn(customer);
 
         mockMvc.perform(get(CUSTOMER_URI + customer.getId().toString()).accept(APPLICATION_JSON))
@@ -59,7 +59,7 @@ class CustomerControllerTest {
     @Test
     void saveCustomerSuccessfully() throws Exception {
         String customerJson = objectMapper.writeValueAsString(customer);
-
+        customer.setId(UUID.randomUUID());
         when(customerService.saveCustomer(any())).thenReturn(customer);
 
         mockMvc.perform(post(CUSTOMER_URI)
@@ -72,7 +72,7 @@ class CustomerControllerTest {
     void updateCustomerSuccessfully() throws Exception {
         String customerJson = objectMapper.writeValueAsString(customer);
 
-        mockMvc.perform(put(CUSTOMER_URI + customer.getId().toString())
+        mockMvc.perform(put(CUSTOMER_URI + UUID.randomUUID().toString())
                 .contentType(APPLICATION_JSON)
                 .content(customerJson))
                 .andExpect(status().isOk());
@@ -82,6 +82,7 @@ class CustomerControllerTest {
 
     @Test
     void deleteByIdSuccessfully() throws Exception {
+        customer.setId(UUID.randomUUID());
         mockMvc.perform(delete(CUSTOMER_URI + customer.getId().toString()))
                 .andExpect(status().isNoContent());
 
